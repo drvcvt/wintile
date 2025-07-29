@@ -1,0 +1,3 @@
+C:/Users/qkeu50/Documents/cpp/windowsnapper/build/CMakeFiles/WinVimTiler.dir
+C:/Users/qkeu50/Documents/cpp/windowsnapper/build/CMakeFiles/ALL_BUILD.dir
+C:/Users/qkeu50/Documents/cpp/windowsnapper/build/CMakeFiles/ZERO_CHECK.dir

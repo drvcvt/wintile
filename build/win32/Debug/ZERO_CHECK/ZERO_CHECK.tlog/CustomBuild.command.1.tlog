@@ -1,0 +1,10 @@
+^C:\USERS\QKEU50\DOCUMENTS\CPP\WINDOWSNAPPER\BUILD\CMAKEFILES\BFF8829F7C93B99B19902999E067CCA0\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/qkeu50/Documents/cpp/windowsnapper -BC:/Users/qkeu50/Documents/cpp/windowsnapper/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/qkeu50/Documents/cpp/windowsnapper/build/WinVimTiler.sln
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
