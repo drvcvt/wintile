@@ -1,6 +1,7 @@
 #include <windows.h>
 #include <map>
 #include <vector>
+#include "IPC.h"
 
 // Hotkey IDs
 #define HOTKEY_ID_H 1
@@ -34,6 +35,7 @@ std::map<HWND, WindowState> windowStates;
 std::map<HWND, RECT> originalPositions;
 
 void SnapWindow(HWND hwnd, WindowState newState, HMONITOR monitor);
+void HandleWindowSelectionFromSwabtab(COPYDATASTRUCT* copyData);
 
 void MaximizeWindow(HWND hwnd) {
     if (originalPositions.find(hwnd) == originalPositions.end()) {
@@ -348,6 +350,19 @@ void HandleSnapRequest(SnapDirection direction) {
     }
 }
 
+void HandleWindowSelectionFromSwabtab(COPYDATASTRUCT* copyData) {
+    if (!copyData || copyData->cbData != sizeof(WindowSelectionData)) return;
+    
+    WindowSelectionData* data = reinterpret_cast<WindowSelectionData*>(copyData->lpData);
+    if (!data || !IsWindow(data->selectedWindow)) return;
+    
+    RECT rc;
+    if (GetWindowRect(data->selectedWindow, &rc)) {
+        SetCursorPos(rc.left + (rc.right - rc.left) / 2, 
+                    rc.top + (rc.bottom - rc.top) / 2);
+    }
+}
+
 LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
     switch (msg) {
         case WM_HOTKEY:
@@ -356,6 +371,14 @@ LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
                 case HOTKEY_ID_L: HandleSnapRequest(SnapDirection::Right); break;
                 case HOTKEY_ID_K: HandleSnapRequest(SnapDirection::Up); break;
                 case HOTKEY_ID_J: HandleSnapRequest(SnapDirection::Down); break;
+            }
+            break;
+        case WM_COPYDATA:
+            {
+                COPYDATASTRUCT* copyData = reinterpret_cast<COPYDATASTRUCT*>(lParam);
+                if (copyData && copyData->dwData == WM_SWABTAB_WINDOW_SELECTED) {
+                    HandleWindowSelectionFromSwabtab(copyData);
+                }
             }
             break;
         case WM_DESTROY:
@@ -414,4 +437,4 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
     }
 
     return 0;
-} 
+}  
